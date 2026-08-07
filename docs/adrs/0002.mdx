@@ -1,0 +1,29 @@
+---
+title: ADR 0002 — Require Btrfs for Early Savepoint Prototypes
+section: Decisions
+order: 3
+---
+
+# ADR 0002 — Require Btrfs for Early Savepoint Prototypes
+
+<statusbadge data-status="Proposed" />
+
+## Context
+
+Savepoints require the ability to create lightweight, bootable system snapshots. Rather than building a custom versioning filesystem, the prototypes should use an existing filesystem with snapshot and subvolume support.
+
+## Decision
+
+Early rollback experiments will likely target **Btrfs** because subvolumes and snapshots are practical for testing bootable system generations.
+
+## Consequences
+
+- Immediate access to snapshot and subvolume primitives without custom kernel development.
+- Limits early testing to systems that can run Btrfs (most QEMU VMs, many real machines).
+- Does not prevent supporting other filesystems later if the savepoint model proves out.
+
+## Alternatives Considered
+
+- **ZFS:** Powerful snapshots but licensing complexity and out-of-tree kernel module status add friction.
+- **LVM snapshots:** Block-level, not filesystem-aware, harder to make bootable.
+- **Custom overlay/delta scheme:** Solves none of the problems Btrfs already handles.

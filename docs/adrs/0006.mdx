@@ -1,0 +1,29 @@
+---
+title: ADR 0006 — roll sendit Is the Only Savepoint Bypass
+section: Decisions
+order: 7
+---
+
+# ADR 0006 — `roll sendit` Is the Only Savepoint Bypass
+
+<statusbadge data-status="Proposed" />
+
+## Context
+
+During a system-critical update, creating a savepoint is the default. However, there may be legitimate situations where a user needs to apply a change immediately without staging a new bootable generation.
+
+## Decision
+
+The project intends to avoid generic flags such as `--no-savepoint` or `--force`. The only bypass should be explicit and memorable: `roll sendit`.
+
+## Consequences
+
+- No accidental bypass through a forgotten flag or muscle memory.
+- The command is deliberately unusual and requires typing "send it" to confirm.
+- Simpler CLI surface: one bypass, not a matrix of flags.
+
+## Alternatives Considered
+
+- **`--no-savepoint` flag:** Easy to type accidentally or include in scripts, defeating the safety default.
+- **`--force` flag:** Generic and overloaded; doesn't communicate what is being forced.
+- **No bypass at all:** Too inflexible for early setup and certain automation scenarios.

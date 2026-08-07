@@ -1,0 +1,79 @@
+---
+title: Terminology
+description: Key terms and concepts used in the Reroll Linux ecosystem.
+section: Overview
+order: 4
+---
+
+# Terminology
+
+Reroll Linux uses tabletop-gaming-inspired names for core concepts. This page collects the current terminology. Some terms are proposed and may change.
+
+<div class="term-grid">
+
+<dl class="term-card">
+<dt>Die</dt>
+<dd>One installable package.</dd>
+</dl>
+
+<dl class="term-card">
+<dt>Dice</dt>
+<dd>Multiple installable packages.</dd>
+</dl>
+
+<dl class="term-card">
+<dt>Roll</dt>
+<dd>A resolved package transaction, such as installing, removing, or updating dice.</dd>
+</dl>
+
+<dl class="term-card">
+<dt>Savepoint</dt>
+<dd>A bootable system generation preserved before a system-critical change.</dd>
+</dl>
+
+<dl class="term-card">
+<dt>Reroll</dt>
+<dd>Returning to an earlier savepoint after a failed or unwanted system update.</dd>
+</dl>
+
+<dl class="term-card">
+<dt>roll</dt>
+<dd>The proposed package and deployment command-line tool.</dd>
+</dl>
+
+<dl class="term-card">
+<dt>rolled</dt>
+<dd>The proposed privileged transaction daemon that may eventually perform protected system changes.</dd>
+</dl>
+
+<dl class="term-card">
+<dt>Dicebag</dt>
+<dd>A package repository containing signed dice and metadata.</dd>
+</dl>
+
+<dl class="term-card">
+<dt>Manufacturer</dt>
+<dd>The identity responsible for signing a die or Dicebag.</dd>
+</dl>
+
+<dl class="term-card">
+<dt>Maker's mark</dt>
+<dd>The fingerprint of a manufacturer's public signing key.</dd>
+</dl>
+
+<dl class="term-card">
+<dt>roll sendit</dt>
+<dd>The deliberately explicit command intended to apply system changes without creating a new savepoint. This policy is proposed and not implemented.</dd>
+</dl>
+
+<dl class="term-card">
+<dt>Permadeath</dt>
+<dd>A future live-USB-only feature concept. It may erase the USB session/persistence data after a critical roll, but must never erase internal computer disks.</dd>
+</dl>
+
+<dl class="term-card">
+<dt>Dicebox</dt>
+<dd>A deferred optional sandbox/runtime concept. It is not currently part of the Reroll Linux scope.</dd>
+</dl>
+
+</div>

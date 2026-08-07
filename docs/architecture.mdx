@@ -1,0 +1,79 @@
+---
+title: System Architecture
+description: How the Reroll Linux system is intended to work.
+section: Design
+order: 1
+---
+
+# System Architecture
+
+<callout data-type="proposed">
+
+Every element on this page is proposed. Nothing described here has been implemented.
+
+</callout>
+
+The diagram below shows the intended high-level architecture of Reroll Linux, from the user issuing a command through to booting a new generation or selecting a known-good reroll.
+
+## Architecture Diagram
+
+<div class="architecture-diagram">
+
+```
+User
+  |
+  v
+roll CLI
+  |
+  v
+rolled transaction daemon (proposed)
+  |--------------------|
+  v                    v
+Dicebag repository     Local die store
+  |                    |
+  ---------> Dependency resolution
+                       |
+                       v
+              Is this system-critical?
+                 |              |
+                no             yes
+                 |              |
+                 v              v
+         Live application   Create a savepoint
+         update path        Stage a new bootable generation
+                 |              |
+                 v              v
+            Run normally   systemd-boot selection
+                                  |
+                                  v
+                    New generation or known-good reroll
+```
+
+</div>
+
+## Architecture Principles
+
+- Normal application updates should not require a reboot.
+- System-critical updates should create a savepoint by default.
+- A savepoint must be bootable, not merely a package list.
+- Rerolling the operating system must not automatically erase user files.
+- `roll sendit` is intended to be the only explicit bypass for system savepoints.
+- Package signing and system rollback are separate concerns: a signed package can still contain a bug, while a savepoint provides recovery.
+
+## Proposed Components
+
+### roll CLI
+
+The user-facing command-line tool. It handles package installation, removal, updates, system history, savepoint management, and rollback operations. It communicates with the transaction daemon for protected operations.
+
+### rolled (Transaction Daemon)
+
+A proposed privileged background service that performs system changes on behalf of the CLI. It would resolve dependencies against configured Dicebag repositories, determine whether a change is system-critical, create savepoints, and apply staged updates.
+
+### Dicebag
+
+A package repository containing signed dice (packages), metadata, and a manufacturer signature. The official Reroll Foundry would provide the primary Dicebag.
+
+### Local Die Store
+
+The on-disk cache of installed and available dice. Includes package metadata, file listings, checksums, and signature data.

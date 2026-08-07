@@ -1,0 +1,31 @@
+---
+title: ADR 0001 — Use C++ for Roll
+section: Decisions
+order: 2
+---
+
+# ADR 0001 — Use C++ for Roll
+
+<statusbadge data-status="Proposed" />
+
+## Context
+
+The `roll` command-line tool will be the primary user interface for package management in Reroll Linux. It must be reliable, fast, and produce a single static binary that can run in a minimal boot environment, a live USB, and a fully installed system.
+
+## Decision
+
+The first `roll` prototype will likely use **C++** for a single static CLI binary, strong error handling, and performance.
+
+## Consequences
+
+- Single static binary: no runtime dependency on language interpreters or shared libraries beyond libc.
+- High performance without a garbage collector or runtime overhead.
+- Mature ecosystem with widespread system-level tooling and packaging support.
+- Extensive control over memory layout and allocation strategies for a system tool.
+
+## Alternatives Considered
+
+- **Rust:** Strong memory safety guarantees and modern tooling, but a steeper learning curve and a more limited pool of contributors familiar with systems-level Rust.
+- **C:** Familiar and fast, but manual memory management increases risk of memory-safety bugs in a system tool without the abstraction benefits of C++.
+- **Go:** Good static binaries, but the runtime and GC add overhead in minimal environments.
+- **Python/Shell:** Quick to prototype, but dependency-heavy and slow for a core system tool.

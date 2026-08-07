@@ -1,14 +1,15 @@
 import type { FC } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { sidebarSections } from '../routeMeta'
+import { getSidebarSections } from '../content'
 
 const Sidebar: FC = () => {
   const { pathname } = useLocation()
+  const sections = getSidebarSections()
 
   return (
     <aside className="sidebar" role="navigation" aria-label="Documentation sidebar">
-      {sidebarSections.map((section) => (
+      {sections.map((section) => (
         <div className="sidebar-section" key={section.label}>
           <div className="sidebar-section-label">{section.label}</div>
           {section.items.map((item) => (
@@ -22,6 +23,14 @@ const Sidebar: FC = () => {
           ))}
         </div>
       ))}
+      <div className="sidebar-section">
+        <Link
+          to="/design-system"
+          className={`sidebar-link ${pathname === '/design-system' ? 'active' : ''}`}
+        >
+          Design System
+        </Link>
+      </div>
     </aside>
   )
 }

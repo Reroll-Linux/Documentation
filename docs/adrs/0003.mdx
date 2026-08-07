@@ -1,0 +1,28 @@
+---
+title: ADR 0003 — Use systemd
+section: Decisions
+order: 4
+---
+
+# ADR 0003 — Use systemd
+
+<statusbadge data-status="Proposed" />
+
+## Context
+
+Reroll Linux needs an init system, service manager, boot loader integration, and system-state tracking. Building these from scratch would delay the core rollback prototype by months or years.
+
+## Decision
+
+Early prototypes will likely use **systemd** and **systemd-boot** to reduce custom infrastructure while testing Reroll's own update logic.
+
+## Consequences
+
+- Immediate service management, boot configuration, and journaling.
+- systemd-boot provides a UEFI boot menu that can list multiple system generations.
+- The decision is not ideological and may be revisited if a simpler alternative is needed.
+
+## Alternatives Considered
+
+- **OpenRC / runit / s6:** Lighter, but lack built-in boot-loader integration and require more custom scripting for multi-generation booting.
+- **Custom init:** Would consume development time better spent on the rollback prototype.

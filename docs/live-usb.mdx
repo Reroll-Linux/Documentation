@@ -1,0 +1,55 @@
+---
+title: Live USB
+description: The intended development, recovery, and installation environment.
+section: Design
+order: 7
+---
+
+# The Live USB
+
+<callout data-type="proposed">
+
+The live USB is planned. No image exists.
+
+</callout>
+
+The Reroll Linux live USB is intended to be a development, recovery, and installation environment.
+
+## Planned Goals
+
+- Boot a minimal Reroll environment.
+- Test hardware and boot behaviour.
+- Install Reroll Linux to a target disk.
+- Run `roll` commands.
+- Preserve optional live-session data in a dedicated persistence area.
+- Support dice commands such as `roll d20`.
+
+## Permadeath
+
+A future `roll d20 --permadeath` Easter egg may be available only on a Reroll live USB. It may erase the USB's own writable session or persistence data after a critical failure.
+
+<callout data-type="danger">
+
+**It must never:**
+- select an internal disk,
+- wipe an installed operating system,
+- delete a user's home directory on another device,
+- silently destroy data.
+
+</callout>
+
+## Installed-System Response
+
+<terminalblock data-title="roll d20 --permadeath on an installed system — concept">
+
+<span className="prompt">$ </span><span className="cmd">roll d20 --permadeath</span>
+
+<span style="color: var(--color-violet)">The presence has no power here.</span>
+
+</terminalblock>
+
+<callout data-type="deferred">
+
+Permadeath is a future live-USB-only feature concept and is deferred. It is not part of the current scope.
+
+</callout>

@@ -1,0 +1,45 @@
+---
+title: Manufacturers and Signing
+description: Package signing, maker's marks, and trust model.
+section: Design
+order: 6
+---
+
+# Manufacturers and Maker's Marks
+
+<callout data-type="proposed">
+
+The signing and manufacturer model is proposed. No signing infrastructure exists.
+
+</callout>
+
+Reroll Linux intends to use package signing so users can verify **where** a die came from and **whether it was modified after signing**.
+
+## Key Concepts
+
+- A **manufacturer** is the signing identity for a die or repository.
+- A **maker's mark** is the fingerprint of that manufacturer's public key.
+- The official **Reroll Foundry** would sign official dice.
+- Each installed device may eventually generate its own local manufacturer identity for self-built dice.
+- Importing another device's public manufacturer mark could allow a user to trust packages built by that specific device.
+- **Trusting a signing key proves package origin and integrity.** It does not prove that the package has no bugs or malicious behaviour.
+
+## Inspection Example
+
+<terminalblock data-title="roll inspect — concept">
+
+<span className="prompt">$ </span><span className="cmd">roll inspect custom-tool.dice</span>
+
+Die:            custom-tool-1.0.0-1.x86_64.dice
+Manufacturer:   Local manufacturer
+Maker's mark:   83C2 7A1F 4B9D 91E0 ...
+Signature:      <span style="color: var(--color-green)">Valid</span>
+Trust:          Local
+
+</terminalblock>
+
+<callout data-type="proposed">
+
+**Why are you checking your own die?** Verifying a locally-built package against your own manufacturer mark confirms that it was not tampered with between build and install. This is a proposed behaviour, not implemented.
+
+</callout>

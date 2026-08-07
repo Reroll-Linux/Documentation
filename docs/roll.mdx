@@ -1,0 +1,52 @@
+---
+title: Roll Package Manager
+description: The proposed command-line interface for package management.
+section: Design
+order: 2
+---
+
+# Roll: package manager and deployment tool
+
+<callout data-type="proposed">
+
+`roll` is the proposed command-line interface. It does not exist yet.
+
+</callout>
+
+`roll` is the proposed command-line interface for package installation, updates, package inspection, system history, and rollback operations in Reroll Linux.
+
+## Example Commands
+
+<terminalblock data-title="Package operations — concept">
+
+<span className="prompt">$ </span><span className="cmd">roll install neovim</span>
+<span className="prompt">$ </span><span className="cmd">roll remove neovim</span>
+<span className="prompt">$ </span><span className="cmd">roll update</span>
+<span className="prompt">$ </span><span className="cmd">roll history</span>
+<span className="prompt">$ </span><span className="cmd">roll savepoints</span>
+<span className="prompt">$ </span><span className="cmd">roll reroll</span>
+<span className="prompt">$ </span><span className="cmd">roll sendit</span>
+<span className="prompt">$ </span><span className="cmd">roll d20</span>
+<span className="prompt">$ </span><span className="cmd">roll 2d6+3</span>
+
+</terminalblock>
+
+## Planned Command Table
+
+| Command | Intended purpose |
+|---|---|
+| `roll install <die>` | Install a package |
+| `roll remove <die>` | Remove a package |
+| `roll update` | Apply normal updates and stage critical updates safely |
+| `roll history` | Show prior transactions |
+| `roll savepoints` | List bootable system generations |
+| `roll reroll [generation]` | Select an earlier savepoint for the next boot |
+| `roll sendit` | Explicitly bypass new savepoint creation for a system update |
+| `roll d20` | Roll a twenty-sided die |
+| `roll <notation>` | Roll standard dice notation such as 2d6+3 |
+
+<callout data-type="warning">
+
+`roll sendit` is a proposed escape hatch, not a recommended update method. It should never create a partial package transaction; it only bypasses the new rollback savepoint.
+
+</callout>

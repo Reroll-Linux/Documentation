@@ -1,6 +1,6 @@
 import type { FC, ReactNode } from 'react'
 import { useState, useCallback, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Header from './Header'
 import Sidebar from './Sidebar'
 import Footer from './Footer'
@@ -14,17 +14,13 @@ function scrollToId(id: string) {
   }
 }
 
-function ScrollToTop() {
+function ScrollToTopButton() {
   const [visible, setVisible] = useState(false)
-
   useEffect(() => {
-    const onScroll = () => {
-      setVisible(window.scrollY > 400)
-    }
+    const onScroll = () => setVisible(window.scrollY > 400)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
-
   return (
     <button
       className={`scroll-top${visible ? ' visible' : ''}`}
@@ -40,6 +36,7 @@ function ScrollToTop() {
 const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { pathname } = useLocation()
+  const navigate = useNavigate()
 
   const toggleSidebar = useCallback(() => {
     setSidebarOpen((v) => !v)
@@ -52,19 +49,28 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement
-      const anchor = target.closest('a[href^="#"]')
+      const anchor = target.closest('a[href]')
       if (!anchor) return
       const href = anchor.getAttribute('href')
-      if (!href || href === '#' || href.startsWith('#/')) return
-      const id = href.slice(1)
-      if (id) {
+      if (!href) return
+
+      if (href.startsWith('#') && !href.startsWith('#/')) {
+        const id = href === '#' ? '' : href.slice(1)
+        if (id) {
+          e.preventDefault()
+          scrollToId(id)
+        }
+        return
+      }
+
+      if (href.startsWith('/') && !href.startsWith('//') && !anchor.getAttribute('target')) {
         e.preventDefault()
-        scrollToId(id)
+        navigate(href)
       }
     }
     document.addEventListener('click', handleClick)
     return () => document.removeEventListener('click', handleClick)
-  }, [])
+  }, [navigate])
 
   return (
     <div className="app-layout">
@@ -85,7 +91,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
       <div className="app-footer">
         <Footer />
       </div>
-      <ScrollToTop />
+      <ScrollToTopButton />
     </div>
   )
 }

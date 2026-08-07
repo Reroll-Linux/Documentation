@@ -1,0 +1,27 @@
+---
+title: ADR 0005 — Defer Dicebox
+section: Decisions
+order: 6
+---
+
+# ADR 0005 — Defer Dicebox
+
+<statusbadge data-status="Accepted" />
+
+## Context
+
+Dicebox is an optional sandbox/runtime concept that would provide isolated application environments. While interesting, it would add significant scope to a project that has not yet proven its core mechanism.
+
+## Decision
+
+An optional sandbox/runtime idea called **Dicebox is deferred**.
+
+## Consequences
+
+- Development stays focused on package deployment and system rollback.
+- No design work spent on sandboxing before the package format is stable.
+- Dicebox may be revisited later if users demonstrate a real need.
+
+## Alternatives Considered
+
+- **Build Dicebox early:** Would distract from the core rollback prototype and dilute the project's focus.

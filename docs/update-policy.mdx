@@ -1,0 +1,50 @@
+---
+title: Update Policy
+description: Intended behaviour for different types of system changes.
+section: Design
+order: 5
+---
+
+# Update Policy
+
+<callout data-type="proposed">
+
+The update policy is proposed. No implementation exists to enforce these behaviours.
+
+</callout>
+
+Reroll Linux intends to distinguish between different types of updates and apply the appropriate level of caution for each.
+
+## Update Behaviour Table
+
+| Update type | Intended behaviour | Savepoint | Reboot |
+|---|---|---|---|
+| Normal application | Apply normally | No | No |
+| User library | Apply normally; restart apps if necessary | No | Usually no |
+| System service | Restart the affected service when appropriate | Optional | Usually no |
+| Desktop/session component | Apply normally; logout may be needed | Optional | Usually no |
+| Kernel / driver / boot stack | Stage new bootable system generation | Yes | Yes to activate |
+| Core system runtime | Protected transaction | Yes | May be required |
+
+<callout data-type="note">
+
+**Reroll Linux should not force a reboot for normal application updates.** Savepoints exist to protect system-critical changes, not to make everyday package management annoying.
+
+</callout>
+
+## The `roll sendit` Escape Hatch
+
+For cases where a user deliberately wants to apply a system-critical update without creating a savepoint, `roll sendit` is the proposed mechanism.
+
+<terminalblock data-title="roll sendit — concept">
+
+<span className="prompt">$ </span><span className="cmd">roll sendit</span>
+
+<span style="color: var(--color-orange)">Warning: this transaction changes system-critical dice without</span>
+<span style="color: var(--color-orange)">creating a new savepoint.</span>
+
+Type "send it" to continue: █
+
+</terminalblock>
+
+This is deliberately explicit. There are no generic flags such as `--no-savepoint` or `--force`.

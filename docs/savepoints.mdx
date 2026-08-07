@@ -1,0 +1,54 @@
+---
+title: Savepoints and Rerolls
+description: Recoverable system states and bootable generations.
+section: Design
+order: 4
+---
+
+# Savepoints: recoverable system states
+
+<callout data-type="proposed">
+
+Savepoints are a proposed mechanism. No implementation exists.
+
+</callout>
+
+A **savepoint** is intended to be a complete bootable system generation created before a system-critical transaction. If the new generation fails, the user should be able to boot a previously known-good generation.
+
+## Example Boot Menu
+
+<terminalblock data-title="systemd-boot concept">
+
+**Reroll Linux**
+
+<span style="color: var(--color-green)">• Savepoint 42</span> — pending system update
+&nbsp;&nbsp;Savepoint 41 — known-good
+&nbsp;&nbsp;Savepoint 40 — known-good
+&nbsp;&nbsp;Recovery shell
+
+</terminalblock>
+
+## What Counts as System-Critical?
+
+- Kernel (`linux`)
+- Graphics driver stack
+- Bootloader
+- Initramfs / initrd
+- Core system libraries (e.g. `glibc`, `systemd`)
+- Core system services
+
+## Important Considerations
+
+- User home data should be separate from system-generation rollback where possible.
+- A filesystem snapshot alone is not enough; the boot configuration, kernel, initramfs, and matching system state must also be coherent.
+- The first proof of concept is expected to use **Btrfs subvolumes** and **systemd-boot**, but these choices are proposed.
+
+## Rerolling
+
+A **reroll** means selecting an earlier savepoint for the next boot. The proposed command is:
+
+```
+roll reroll 41
+```
+
+This would tell the bootloader to start from savepoint 41 on the next reboot. The current (potentially broken) generation would remain on disk for inspection.

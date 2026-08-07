@@ -1,0 +1,50 @@
+---
+title: Dice Package Format
+description: The proposed package format for Reroll Linux.
+section: Design
+order: 3
+---
+
+# Dice: the proposed package format
+
+<callout data-type="proposed">
+
+This file layout is an early proposal. The project has not committed to a final archive format, metadata schema, compression method, dependency solver, or build-recipe syntax.
+
+</callout>
+
+A **die** is Reroll Linux terminology for one installable package. The proposed archive extension is `.dice`.
+
+## Naming Convention
+
+`neovim-0.11.2-1.x86_64.dice`
+
+Format: `<name>-<version>-<release>.<arch>.dice`
+
+## Conceptual Archive Layout
+
+```
+neovim-0.11.2-1.x86_64.dice
+├── meta/
+│   ├── manifest.json
+│   ├── files.sha256
+│   └── signature.ed25519
+└── payload/
+    └── usr/
+        └── bin/
+            └── nvim
+```
+
+## Metadata (proposed)
+
+The `manifest.json` file would contain package identity, dependency declarations, and installation instructions. The `files.sha256` file would list every shipped file with its checksum. The `signature.ed25519` file would carry the manufacturer's cryptographic signature over the metadata and content.
+
+## Payload
+
+The `payload/` directory would contain the actual filesystem tree installed into the target system. The layout mirrors the target root filesystem structure so that installation is a straightforward merge.
+
+<callout data-type="note">
+
+This design draws loose inspiration from the simplicity of tarball-based packaging, while adding structured metadata and signing that similar simple formats often lack. Nothing is final.
+
+</callout>

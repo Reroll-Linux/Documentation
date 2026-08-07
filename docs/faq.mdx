@@ -1,0 +1,48 @@
+---
+title: FAQ
+description: Frequently asked questions about Reroll Linux.
+section: Meta
+order: 1
+---
+
+# Frequently Asked Questions
+
+### Is Reroll Linux based on Arch?
+
+No final base distribution has been chosen. Reroll Linux is intended to be an independently developed Linux distribution, though its minimal and rolling-release philosophy is inspired by projects such as Arch Linux.
+
+### Is Reroll Linux a custom kernel?
+
+No. The early project focus is package management, bootable system generations, and rollback. It is expected to begin with an upstream Linux kernel.
+
+### Is Reroll Linux usable today?
+
+No. It is currently a design and prototype project. There is no installable image, no package repository, and no bootable environment.
+
+### Will every update force a reboot?
+
+No. The intended design separates ordinary application updates from system-critical changes. Only changes that need a bootable deployment (kernel, drivers, boot stack) should require rebooting to activate.
+
+### What is roll sendit?
+
+It is the proposed explicit command for bypassing savepoint creation during a system update. It is meant to be exceptional, not normal, and requires typing "send it" to confirm.
+
+### Is Dicebox required?
+
+No. Dicebox is deferred and may never be developed unless users demonstrate a real need. Reroll Linux does not depend on it.
+
+### Can Reroll Linux wipe my computer through permadeath?
+
+No. Permadeath is intended only as a future live-USB joke feature and must never affect internal disks or installed systems. An installed system will refuse the command.
+
+### Why is the project called Reroll Linux?
+
+The name comes from tabletop gaming: a "reroll" means discarding a bad dice result and rolling again. In Reroll Linux, a bad update result can be discarded by booting a previous system generation.
+
+### When will Reroll Linux be ready to try?
+
+There is no release date. The project is in its earliest stage. The [Roadmap](/roadmap) page shows the planned development milestones.
+
+---
+
+Have a question not covered here? [Open an issue on GitHub](https://github.com/reroll-linux).

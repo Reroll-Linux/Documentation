@@ -1,0 +1,53 @@
+---
+title: Introduction
+description: What is Reroll Linux?
+section: Overview
+order: 1
+---
+
+# What is Reroll Linux?
+
+Reroll Linux is a **proposed** minimal rolling-release Linux distribution focused on one core idea: **critical system updates should be recoverable by default.**
+
+Traditional package updates can replace a running system in place. Reroll Linux is intended to **stage risky system changes into a new bootable savepoint**, allowing the user to return to a previously working state if an update fails.
+
+<div class="tagline">
+&ldquo;Roll forward confidently. Reroll safely.&rdquo;
+</div>
+
+<callout data-type="warning">
+
+**Warning:** Reroll Linux is currently in the design and prototype stage. It is not ready to install on a real computer.
+
+</callout>
+
+## Why Reroll Linux?
+
+- **Rolling distributions** provide current software, but updates can sometimes break graphics, boot configuration, drivers, or custom setups.
+- **Recovery should not require** a live USB, manual chroot repair, or reinstall.
+- A user should be able to **choose an older known-good system generation** from the boot menu.
+
+## What would a typical update look like?
+
+<terminalblock data-title="roll update — concept">
+
+<span className="prompt">$ </span><span className="cmd">roll update</span>
+
+Resolving dice...
+System-critical changes detected:
+&nbsp;&nbsp;linux
+&nbsp;&nbsp;graphics-driver
+&nbsp;&nbsp;system-services
+
+Creating savepoint 42...
+Update staged.
+
+<span style="color: var(--color-green)">Reboot when ready.</span>
+
+</terminalblock>
+
+<callout data-type="proposed">
+
+The terminal output above is a mock-up of the intended behaviour. The `roll` command does not exist yet.
+
+</callout>

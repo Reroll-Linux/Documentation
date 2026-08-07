@@ -1,0 +1,28 @@
+---
+title: ADR 0004 — Start With the Upstream Linux Kernel
+section: Decisions
+order: 5
+---
+
+# ADR 0004 — Start With the Upstream Linux Kernel
+
+<statusbadge data-status="Accepted" />
+
+## Context
+
+Many Linux distributions carry custom kernel patches for performance, compatibility, or features. Reroll Linux is trying to prove a specific system-management idea, not a new kernel.
+
+## Decision
+
+Reroll Linux will begin with an **upstream kernel** rather than custom patches.
+
+## Consequences
+
+- No ongoing maintenance burden for custom kernel patches.
+- Tracking upstream releases is simpler.
+- Custom patches can be considered later if specific needs arise and are justified.
+
+## Alternatives Considered
+
+- **Custom kernel patchset:** Would consume significant maintenance effort without proving the rollback concept.
+- **Linux-libre:** Different set of concerns; not relevant to the rollback prototype.
