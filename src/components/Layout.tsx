@@ -38,9 +38,8 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
-  const toggleSidebar = useCallback(() => {
-    setSidebarOpen((v) => !v)
-  }, [])
+  const closeSidebar = useCallback(() => setSidebarOpen(false), [])
+  const toggleSidebar = useCallback(() => setSidebarOpen((v) => !v), [])
 
   useEffect(() => {
     setSidebarOpen(false)
@@ -72,11 +71,25 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
     return () => document.removeEventListener('click', handleClick)
   }, [navigate])
 
+  useEffect(() => {
+    if (sidebarOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [sidebarOpen])
+
   return (
     <div className="app-layout">
       <div className="app-header">
         <Header onToggleSidebar={toggleSidebar} />
       </div>
+      <div
+        className={`sidebar-overlay${sidebarOpen ? ' sidebar-overlay--visible' : ''}`}
+        onClick={closeSidebar}
+        aria-hidden="true"
+      />
       <div className={`app-sidebar${sidebarOpen ? ' sidebar--mobile-open' : ''}`}>
         <Sidebar />
       </div>
