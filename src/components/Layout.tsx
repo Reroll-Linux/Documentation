@@ -35,14 +35,18 @@ function ScrollToTopButton() {
 
 const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [tocOpen, setTocOpen] = useState(false)
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((v) => !v), [])
+  const closeToc = useCallback(() => setTocOpen(false), [])
+  const toggleToc = useCallback(() => setTocOpen((v) => !v), [])
 
   useEffect(() => {
     setSidebarOpen(false)
+    setTocOpen(false)
   }, [pathname])
 
   useEffect(() => {
@@ -58,6 +62,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
         if (id) {
           e.preventDefault()
           scrollToId(id)
+          setTocOpen(false)
         }
         return
       }
@@ -71,39 +76,59 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
     return () => document.removeEventListener('click', handleClick)
   }, [navigate])
 
+  const panelOpen = sidebarOpen || tocOpen
+
   useEffect(() => {
-    if (sidebarOpen) {
+    if (panelOpen) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = ''
     }
     return () => { document.body.style.overflow = '' }
-  }, [sidebarOpen])
+  }, [panelOpen])
 
   return (
     <div className="app-layout">
       <div className="app-header">
         <Header onToggleSidebar={toggleSidebar} />
       </div>
+
       <div
-        className={`sidebar-overlay${sidebarOpen ? ' sidebar-overlay--visible' : ''}`}
-        onClick={closeSidebar}
+        className={`panel-overlay${panelOpen ? ' panel-overlay--visible' : ''}`}
+        onClick={() => { closeSidebar(); closeToc() }}
         aria-hidden="true"
       />
+
       <div className={`app-sidebar${sidebarOpen ? ' sidebar--mobile-open' : ''}`}>
         <Sidebar />
       </div>
+
       <main className="app-content-wrapper">
         <article className="app-content">
           {children}
         </article>
-        <aside className="app-toc">
+        <aside className={`app-toc${tocOpen ? ' toc--mobile-open' : ''}`}>
+          <div className="toc-mobile-header">
+            <span className="toc-mobile-title">On this page</span>
+            <button className="toc-mobile-close" onClick={closeToc} aria-label="Close table of contents">×</button>
+          </div>
           <TableOfContents />
         </aside>
       </main>
+
       <div className="app-footer">
         <Footer />
       </div>
+
+      <button
+        className="toc-fab"
+        onClick={toggleToc}
+        aria-label="Table of contents"
+        title="Jump to section"
+      >
+        ☰
+      </button>
+
       <ScrollToTopButton />
     </div>
   )
