@@ -15,7 +15,7 @@ const Header: FC<{ onToggleSidebar?: () => void }> = ({ onToggleSidebar }) => {
   return (
     <header className="header" role="banner">
       <Link to="/" className="header-logo" aria-label="Reroll Linux home">
-        <img src="/Documentation/logo.svg" alt="Reroll Linux logo" />
+        <img src="/logo.svg" alt="Reroll Linux logo" />
         <span>REROLL LINUX</span>
       </Link>
 
