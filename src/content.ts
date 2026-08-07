@@ -12,56 +12,98 @@ export interface SidebarSection {
   items: { path: string; label: string }[]
 }
 
-const rawModules = import.meta.glob('/docs/**/*.mdx', {
-  query: '?raw',
-  import: 'default',
-  eager: true,
-})
+interface PageEntry {
+  meta: PageMeta
+  content: string
+}
 
-const pages: PageMeta[] = []
+function parseFrontmatter(raw: string): { data: Record<string, string>; body: string } {
+  const fmMatch = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/)
+  if (!fmMatch) return { data: {}, body: raw }
+  const data: Record<string, string> = {}
+  for (const line of fmMatch[1].split('\n')) {
+    const idx = line.indexOf(':')
+    if (idx === -1) continue
+    const key = line.slice(0, idx).trim()
+    const value = line.slice(idx + 1).trim()
+    if (key && value) data[key] = value
+  }
+  return { data, body: raw.slice(fmMatch[0].length) }
+}
 
-for (const [filePath, raw] of Object.entries(rawModules)) {
-  const content = raw as string
-  const slug = filePath
-    .replace('/docs/', '')
-    .replace(/\/index\.mdx$/, '')
-    .replace(/\.mdx$/, '')
+const registry: Record<string, PageEntry> = {}
 
+function register(slug: string, raw: string) {
+  const { data, body } = parseFrontmatter(raw)
+  if (!data.title) return
   const meta: PageMeta = {
     slug,
     path: slug === '' ? '/' : `/${slug}`,
-    title: slug,
-    description: '',
-    section: 'Overview',
-    order: 99,
+    title: data.title,
+    description: data.description || '',
+    section: data.section || 'Overview',
+    order: parseInt(data.order, 10) || 99,
   }
-
-  const fmMatch = content.match(/^---\n([\s\S]*?)\n---/)
-  if (fmMatch) {
-    const lines = fmMatch[1].split('\n')
-    for (const line of lines) {
-      const [key, ...rest] = line.split(':')
-      if (key && rest.length) {
-        const value = rest.join(':').trim()
-        if (key === 'title') meta.title = value
-        else if (key === 'description') meta.description = value
-        else if (key === 'section') meta.section = value
-        else if (key === 'order') meta.order = parseInt(value, 10) || 99
-      }
-    }
-  }
-
-  pages.push(meta)
+  registry[meta.path] = { meta, content: body }
 }
+
+// === Import all MDX files as raw strings ===
+import indexRaw from '../docs/index.mdx?raw'
+import statusRaw from '../docs/status.mdx?raw'
+import roadmapRaw from '../docs/roadmap.mdx?raw'
+import terminologyRaw from '../docs/terminology.mdx?raw'
+import architectureRaw from '../docs/architecture.mdx?raw'
+import rollRaw from '../docs/roll.mdx?raw'
+import diceRaw from '../docs/dice.mdx?raw'
+import savepointsRaw from '../docs/savepoints.mdx?raw'
+import updatePolicyRaw from '../docs/update-policy.mdx?raw'
+import manufacturersRaw from '../docs/manufacturers.mdx?raw'
+import liveUsbRaw from '../docs/live-usb.mdx?raw'
+import adrsIndexRaw from '../docs/adrs/index.mdx?raw'
+import adr0001Raw from '../docs/adrs/0001.mdx?raw'
+import adr0002Raw from '../docs/adrs/0002.mdx?raw'
+import adr0003Raw from '../docs/adrs/0003.mdx?raw'
+import adr0004Raw from '../docs/adrs/0004.mdx?raw'
+import adr0005Raw from '../docs/adrs/0005.mdx?raw'
+import adr0006Raw from '../docs/adrs/0006.mdx?raw'
+import faqRaw from '../docs/faq.mdx?raw'
+import contributingRaw from '../docs/contributing.mdx?raw'
+import securityRaw from '../docs/security.mdx?raw'
+
+register('', indexRaw)
+register('status', statusRaw)
+register('roadmap', roadmapRaw)
+register('terminology', terminologyRaw)
+register('architecture', architectureRaw)
+register('roll', rollRaw)
+register('dice', diceRaw)
+register('savepoints', savepointsRaw)
+register('update-policy', updatePolicyRaw)
+register('manufacturers', manufacturersRaw)
+register('live-usb', liveUsbRaw)
+register('adrs', adrsIndexRaw)
+register('adrs/0001', adr0001Raw)
+register('adrs/0002', adr0002Raw)
+register('adrs/0003', adr0003Raw)
+register('adrs/0004', adr0004Raw)
+register('adrs/0005', adr0005Raw)
+register('adrs/0006', adr0006Raw)
+register('faq', faqRaw)
+register('contributing', contributingRaw)
+register('security', securityRaw)
+
+// === Public API ===
 
 const sectionOrder = ['Overview', 'Design', 'Decisions', 'Meta']
 
-pages.sort((a, b) => {
-  const sa = sectionOrder.indexOf(a.section)
-  const sb = sectionOrder.indexOf(b.section)
-  if (sa !== sb) return sa - sb
-  return a.order - b.order
-})
+const pages: PageMeta[] = Object.values(registry)
+  .map((e) => e.meta)
+  .sort((a, b) => {
+    const sa = sectionOrder.indexOf(a.section)
+    const sb = sectionOrder.indexOf(b.section)
+    if (sa !== sb) return sa - sb
+    return a.order - b.order
+  })
 
 export function getAllPages(): PageMeta[] {
   return pages
@@ -72,39 +114,22 @@ export function getPage(path: string): PageMeta | undefined {
 }
 
 export function getPageContent(path: string): string | undefined {
-  for (const [filePath, raw] of Object.entries(rawModules)) {
-    const slug = filePath
-      .replace('/docs/', '')
-      .replace(/\/index\.mdx$/, '')
-      .replace(/\.mdx$/, '')
-    const p = slug === '' ? '/' : `/${slug}`
-    if (p === path) {
-      const content = raw as string
-      return content.replace(/^---\n[\s\S]*?\n---\n?/, '')
-    }
-  }
-  return undefined
+  return registry[path]?.content
 }
 
 export function getSidebarSections(): SidebarSection[] {
   const map = new Map<string, { path: string; label: string }[]>()
   for (const page of pages) {
-    if (!map.has(page.section)) {
-      map.set(page.section, [])
-    }
+    if (!map.has(page.section)) map.set(page.section, [])
     map.get(page.section)!.push({ path: page.path, label: page.title })
   }
   const result: SidebarSection[] = []
   for (const section of sectionOrder) {
     const items = map.get(section)
-    if (items && items.length > 0) {
-      result.push({ label: section, items })
-    }
+    if (items && items.length > 0) result.push({ label: section, items })
   }
   for (const [section, items] of map) {
-    if (!sectionOrder.includes(section)) {
-      result.push({ label: section, items })
-    }
+    if (!sectionOrder.includes(section)) result.push({ label: section, items })
   }
   return result
 }
